@@ -7,15 +7,15 @@ interface SignaturePadProps {
 
 const SignaturePad: React.FC<SignaturePadProps> = ({ label, isReadOnly = false }) => (
     <div>
-        <div className={`w-full h-32 rounded-md border border-gray-300 flex items-center justify-center transition-colors ${isReadOnly ? 'bg-gray-100' : 'bg-cyan-50/50 cursor-pointer hover:border-secondary'}`}>
+        <div className={`w-full h-32 rounded-md border border-border-strong flex items-center justify-center transition-colors ${isReadOnly ? 'bg-background-alt' : 'bg-primary-lightest cursor-pointer hover:border-primary'}`}>
             {isReadOnly ? (
-                <span className="text-gray-500 font-medium">Firmado</span>
+                <span className="text-text-secondary font-medium">Firmado</span>
             ) : (
-                <span className="text-gray-400 italic">Área de firma</span>
+                <span className="text-text-tertiary italic">Área de firma</span>
             )}
         </div>
-        <div className="mt-2 border-t border-gray-400 pt-1">
-            <p className="text-sm text-gray-700 text-center">{label} {!isReadOnly && <span className="text-red-500">*</span>}</p>
+        <div className="mt-2 border-t border-border-strong pt-1">
+            <p className="text-sm text-text-primary text-center">{label} {!isReadOnly && <span className="text-status-error-text">*</span>}</p>
         </div>
     </div>
 );

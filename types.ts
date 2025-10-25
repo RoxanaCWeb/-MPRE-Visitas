@@ -3,7 +3,8 @@ export enum VisitStatus {
   Programada = 'Programada',
   Realizada = 'Realizada',
   Fallida = 'Fallida',
-  Reprogramada = 'Reprogramada',
+  Cancelada = 'Cancelada',
+  Rechazada = 'Rechazada',
 }
 
 export interface Visit {

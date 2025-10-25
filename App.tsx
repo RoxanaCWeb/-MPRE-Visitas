@@ -5,8 +5,10 @@ import Sidebar, { MenuItem } from './components/layout/Sidebar';
 import VisitDetailScreen from './components/VisitDetailScreen';
 import { MOCK_VISITS } from './constants';
 import { Visit, VisitStatus } from './types';
-import Toast from './components/Toast';
+import ToastContainer from './components/ToastContainer';
+import type { ToastProps, ToastType } from './components/Toast';
 import PreventorDashboard from './components/PreventorDashboard';
+import RejectionDrawer from './components/RejectionDrawer';
 
 
 // Import icons
@@ -34,10 +36,6 @@ type View = {
   visitId?: string;
   filters?: VisitFilters;
 }
-type ToastState = {
-    message: string;
-    type: 'success';
-} | null;
 
 const preventorMenuItems: MenuItem[] = [
   { label: 'Inicio', icon: <HomeIcon className="h-6 w-6" /> },
@@ -59,13 +57,16 @@ const App: React.FC = () => {
   const [view, setView] = useState<View>({ screen: 'Inicio' });
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [visits, setVisits] = useState<Visit[]>(MOCK_VISITS);
-  const [toast, setToast] = useState<ToastState>(null);
+  const [toasts, setToasts] = useState<Omit<ToastProps, 'onDismiss'>[]>([]);
+  const [rejectionDrawerState, setRejectionDrawerState] = useState<{ isOpen: boolean; visitId: string | null }>({ isOpen: false, visitId: null });
 
-  const showToast = (message: string, type: 'success' = 'success') => {
-    setToast({ message, type });
-    setTimeout(() => {
-        setToast(null);
-    }, 3000); // Hide after 3 seconds
+  const showToast = (message: string, type: ToastType = 'success') => {
+    const id = Date.now().toString() + Math.random();
+    setToasts(prevToasts => [...prevToasts, { id, message, type }]);
+  };
+
+  const onDismissToast = (id: string) => {
+    setToasts(prevToasts => prevToasts.filter(toast => toast.id !== id));
   };
 
   const handleSelectRole = (selectedRole: 'preventor' | 'backoffice') => {
@@ -100,11 +101,9 @@ const App: React.FC = () => {
       prevVisits.map(v => {
         if (visitIds.includes(v.id)) {
           let newStatus = v.status;
-          // Only change status if it's a schedulable type
+          // Change status to Programada if it was Pendiente. Otherwise, keep it as is (it's a reschedule).
           if (v.status === VisitStatus.Pendiente) {
             newStatus = VisitStatus.Programada;
-          } else if (v.status === VisitStatus.Programada || v.status === VisitStatus.Reprogramada) {
-            newStatus = VisitStatus.Reprogramada;
           }
           return { ...v, scheduledDate: scheduledDate, status: newStatus };
         }
@@ -112,6 +111,25 @@ const App: React.FC = () => {
       })
     );
     showToast(`Se ${visitIds.length > 1 ? 'programaron' : 'programó'} ${visitIds.length} visita${visitIds.length > 1 ? 's' : ''} con éxito.`);
+  };
+
+  const handleOpenRejectDrawer = (visitId: string) => {
+    setRejectionDrawerState({ isOpen: true, visitId: visitId });
+  };
+
+  const handleConfirmRejection = (reason: string) => {
+    if (rejectionDrawerState.visitId) {
+        setVisits(prevVisits =>
+            prevVisits.map(v => {
+                if (v.id === rejectionDrawerState.visitId) {
+                    return { ...v, status: VisitStatus.Rechazada, observations: `Rechazada por el preventor: ${reason}` };
+                }
+                return v;
+            })
+        );
+        showToast('La visita ha sido rechazada.');
+    }
+    setRejectionDrawerState({ isOpen: false, visitId: null });
   };
 
   const handleSaveVisitReport = (reportData: Partial<Visit> & { id: string }) => {
@@ -136,8 +154,8 @@ const App: React.FC = () => {
   const renderContent = () => {
     const PlaceholderScreen = ({ title }: { title: string }) => (
       <div className="p-4 sm:p-6 lg:p-8">
-        <h1 className="text-3xl font-bold text-primary mb-4">{title}</h1>
-        <p className="text-lg text-gray-700">Esta sección está en desarrollo.</p>
+        <h1 className="text-3xl font-bold text-text-primary mb-4">{title}</h1>
+        <p className="text-lg text-text-secondary">Esta sección está en desarrollo.</p>
       </div>
     );
     
@@ -146,7 +164,7 @@ const App: React.FC = () => {
         const visit = visits.find(v => v.id === view.visitId);
         if (visit) {
           const isReadOnly = visit.status === VisitStatus.Realizada;
-          return <VisitDetailScreen visit={visit} onBack={handleBackToList} onSave={handleSaveVisitReport} isReadOnly={isReadOnly} />;
+          return <VisitDetailScreen visit={visit} onBack={handleBackToList} onSave={handleSaveVisitReport} isReadOnly={isReadOnly} showToast={showToast} />;
         }
       }
 
@@ -156,7 +174,7 @@ const App: React.FC = () => {
         case 'Establecimientos':
           return <PlaceholderScreen title="Establecimientos" />;
         case 'Mis Visitas':
-          return <MyVisitsScreen visits={visits} onViewVisit={handleViewVisit} onScheduleVisits={handleUpdateScheduledDate} initialFilters={view.filters} />;
+          return <MyVisitsScreen visits={visits} onViewVisit={handleViewVisit} onScheduleVisits={handleUpdateScheduledDate} onRejectVisit={handleOpenRejectDrawer} initialFilters={view.filters} showToast={showToast} />;
         default:
           return <PlaceholderScreen title="Página no encontrada" />;
       }
@@ -177,12 +195,14 @@ const App: React.FC = () => {
 
   return (
     <>
-      <Toast 
-          message={toast?.message}
-          type={toast?.type}
-          onClose={() => setToast(null)}
+      <ToastContainer toasts={toasts} onDismiss={onDismissToast} />
+      <RejectionDrawer
+          isOpen={rejectionDrawerState.isOpen}
+          onClose={() => setRejectionDrawerState({ isOpen: false, visitId: null })}
+          onConfirm={handleConfirmRejection}
+          showToast={showToast}
       />
-      <div className="flex h-screen bg-gray-100 overflow-hidden">
+      <div className="flex h-screen bg-background overflow-hidden">
         <Sidebar 
           menuItems={menuItems} 
           onRoleChange={handleGoBack} 
@@ -193,16 +213,16 @@ const App: React.FC = () => {
         />
         <div className="flex-1 flex flex-col">
           {/* Mobile Header */}
-          <header className="md:hidden bg-white shadow-sm z-10 flex items-center p-4 flex-shrink-0 gap-4">
+          <header className="md:hidden bg-surface shadow-sm z-10 flex items-center p-4 flex-shrink-0 gap-4">
             <button
               onClick={() => setIsMobileSidebarOpen(true)}
-              className="p-1 rounded-md text-primary hover:bg-gray-200"
+              className="p-1 rounded-md text-text-primary hover:bg-border"
               aria-label="Abrir menú"
             >
               <span className="sr-only">Abrir menú</span>
               <MenuIcon className="h-6 w-6" />
             </button>
-            <h1 className="font-bold text-xl text-primary">ART System</h1>
+            <h1 className="font-bold text-xl text-text-primary">ART System</h1>
           </header>
 
           <main className="flex-1 overflow-y-auto">

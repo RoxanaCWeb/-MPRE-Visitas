@@ -6,9 +6,10 @@ interface VisitActionsProps {
   visit: Visit;
   onViewVisit: (visitId: string) => void;
   onScheduleVisit: (visitId: string) => void;
+  onRejectVisit: (visitId: string) => void;
 }
 
-const VisitActions: React.FC<VisitActionsProps> = ({ visit, onViewVisit, onScheduleVisit }) => {
+const VisitActions: React.FC<VisitActionsProps> = ({ visit, onViewVisit, onScheduleVisit, onRejectVisit }) => {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -33,7 +34,7 @@ const VisitActions: React.FC<VisitActionsProps> = ({ visit, onViewVisit, onSched
     const viewButton = (
       <button 
         onClick={() => handleActionClick(() => onViewVisit(visit.id))} 
-        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" 
+        className="block w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-background-alt" 
         role="menuitem"
       >
         Ver visita
@@ -43,7 +44,7 @@ const VisitActions: React.FC<VisitActionsProps> = ({ visit, onViewVisit, onSched
     const scheduleButton = (
         <button
           onClick={() => handleActionClick(() => onScheduleVisit(visit.id))}
-          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          className="block w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-background-alt"
           role="menuitem"
         >
           {visit.scheduledDate ? 'Reprogramar visita' : 'Programar visita'}
@@ -54,17 +55,22 @@ const VisitActions: React.FC<VisitActionsProps> = ({ visit, onViewVisit, onSched
     switch (visit.status) {
       case VisitStatus.Pendiente:
       case VisitStatus.Programada:
-      case VisitStatus.Reprogramada:
         return (
           <>
             {viewButton}
             {scheduleButton}
             {visit.status === VisitStatus.Pendiente && (
-              <a href="#" className="block px-4 py-2 text-sm text-red-600 hover:bg-red-50" role="menuitem">Rechazar visita</a>
+              <button
+                onClick={() => handleActionClick(() => onRejectVisit(visit.id))}
+                className="block w-full text-left px-4 py-2 text-sm text-status-error-text hover:bg-status-error-bg" role="menuitem">
+                Rechazar visita
+              </button>
             )}
           </>
         );
       case VisitStatus.Fallida:
+      case VisitStatus.Cancelada:
+      case VisitStatus.Rechazada:
         return (
           <>
             {viewButton}
@@ -74,7 +80,7 @@ const VisitActions: React.FC<VisitActionsProps> = ({ visit, onViewVisit, onSched
         return (
           <>
             {viewButton}
-            <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Descargar acta de visita</a>
+            <a href="#" className="block px-4 py-2 text-sm text-text-primary hover:bg-background-alt" role="menuitem">Descargar acta de visita</a>
           </>
         );
       default:
@@ -87,7 +93,7 @@ const VisitActions: React.FC<VisitActionsProps> = ({ visit, onViewVisit, onSched
       <div>
         <button
           type="button"
-          className="flex items-center p-2 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-secondary"
+          className="flex items-center p-2 rounded-full text-text-tertiary hover:bg-background-alt hover:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
           onClick={() => setIsOpen(!isOpen)}
           aria-haspopup="true"
           aria-expanded={isOpen}
@@ -100,7 +106,7 @@ const VisitActions: React.FC<VisitActionsProps> = ({ visit, onViewVisit, onSched
 
       {isOpen && (
         <div
-          className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
+          className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-surface ring-1 ring-black ring-opacity-5 z-10"
           role="menu"
           aria-orientation="vertical"
         >

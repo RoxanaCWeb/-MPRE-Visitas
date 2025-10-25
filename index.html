@@ -11,8 +11,80 @@
         theme: {
           extend: {
             colors: {
-              primary: '#1E272E',
-              secondary: '#1473E6',
+              // Brand / Primary
+              'primary': '#1269d1',
+              'primary-hover': '#0f5ab1',
+              'primary-focus-ring': '#1269d1',
+              'primary-dark': '#083061',
+              'primary-darker': '#0b3f7f',
+              'primary-subtle': '#1c4b82',
+              'primary-lightest': '#e8f1fd', // for hover on outline button
+              'primary-border': '#1e40af', // blue-800 for sidebar border
+
+              // UI / Neutral
+              'background': '#F9FAFB',      // gray-50
+              'background-alt': '#F3F4F6',  // gray-100
+              'surface': '#FFFFFF',
+              'border': '#E5E7EB',          // gray-200
+              'border-strong': '#D1D5DB',    // gray-300
+              
+              // Text
+              'text-primary': '#111827',     // gray-900 / gray-800
+              'text-secondary': '#6B7280',   // gray-600 / gray-500
+              'text-tertiary': '#9CA3AF',    // gray-400
+              'text-placeholder': '#6B7280', // gray-500
+              'text-on-primary': '#FFFFFF',
+              'text-disabled': '#9CA3AF',    // gray-400
+
+              // Status: Success
+              'status-success-bg': '#F0FDF4',   // green-50
+              'status-success-text': '#15803D', // green-700
+              'status-success-border': '#15803D', // green-700
+              'status-success-icon': '#16A34A', // green-600
+
+              // Status: Warning / Pending
+              'status-warning-bg': '#FFF7ED',   // orange-50
+              'status-warning-text': '#C2410C', // orange-700
+              'status-warning-border': '#C2410C', // orange-700
+              
+              // Status: Error
+              'status-error-bg': '#FEF2F2',     // red-50
+              'status-error-text': '#B91C1C',   // red-700
+              'status-error-border': '#B91C1C', // red-700
+
+              // Status: Info
+              'status-info-bg': '#EFF6FF',      // blue-50
+              'status-info-text': '#1D4ED8',    // blue-700
+              'status-info-border': '#1D4ED8',  // blue-700
+              'status-info-icon': '#2563EB',    // blue-600
+              
+              // Status: Custom app states
+              'status-purple-bg': '#FAF5FF',    // purple-50
+              'status-purple-text': '#7E22CE',  // purple-700
+              'status-purple-border': '#7E22CE',// purple-700
+              
+              'status-preliquidado-bg': '#EEF2FF', // indigo-50
+              'status-preliquidado-text': '#4338CA', // indigo-700
+              'status-preliquidado-border': '#4338CA', // indigo-700
+
+              'status-pagada-bg': '#EFF6FF',       // blue-50
+              'status-pagada-text': '#1D4ED8',      // blue-700
+              'status-pagada-border': '#1D4ED8',      // blue-700
+
+              'status-coninforme-bg': '#ECFEFF',    // cyan-50
+              'status-coninforme-text': '#0E7490',  // cyan-700
+              'status-coninforme-border': '#0E7490',  // cyan-700
+
+              'status-pendienteinforme-bg': '#FFF7ED', // orange-50
+              'status-pendienteinforme-text': '#C2410C',// orange-700
+              'status-pendienteinforme-border': '#C2410C',// orange-700
+
+              'status-cancelado-bg': '#F3F4F6',      // gray-100
+              'status-cancelado-text': '#4B5563',    // gray-600
+              'status-cancelado-border': '#4B5563',    // gray-600
+
+              // UI Accents
+              'avatar-bg': '#FF7F50', // A custom coral color
             },
           },
         },
@@ -40,7 +112,7 @@
       
       /* Custom checkbox color */
       input[type="checkbox"] {
-        accent-color: #1473E6;
+        accent-color: #1269d1; /* primary */
       }
     </style>
   <script type="importmap">

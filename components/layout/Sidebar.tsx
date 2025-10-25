@@ -34,7 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, onRoleChange, activeItemLa
 
       {/* Sidebar Container */}
       <aside 
-        className={`bg-primary text-gray-200 flex flex-col h-screen
+        className={`bg-primary-darker text-text-on-primary flex flex-col h-screen
           fixed inset-y-0 left-0 z-30
           md:relative md:h-auto
           transition-all duration-300 ease-in-out
@@ -43,17 +43,17 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, onRoleChange, activeItemLa
         }
         aria-label="Main navigation"
       >
-        <div className={`flex items-center h-16 border-b border-gray-700 px-4 ${desktopCollapsed ? 'justify-center' : 'justify-between'}`}>
+        <div className={`flex items-center h-16 border-b border-primary-subtle px-4 ${desktopCollapsed ? 'justify-center' : 'justify-between'}`}>
           {/* Title/Logo */}
           {!desktopCollapsed && (
-            <span className="font-bold text-xl text-white whitespace-nowrap">ART System</span>
+            <span className="font-bold text-xl text-text-on-primary whitespace-nowrap">ART System</span>
           )}
 
           {/* Toggle Button - Desktop */}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
             title={isCollapsed ? "Expandir" : "Colapsar"}
-            className="hidden md:block p-1 rounded-md text-gray-400 hover:bg-gray-700 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white"
+            className="hidden md:block p-1 rounded-md text-text-on-primary/70 hover:bg-primary-subtle hover:text-text-on-primary transition-colors focus:outline-none focus:ring-2 focus:ring-text-on-primary"
           >
             <span className="sr-only">{isCollapsed ? "Expandir menú" : "Colapsar menú"}</span>
             <ChevronDoubleLeftIcon className={`h-6 w-6 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`} />
@@ -62,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, onRoleChange, activeItemLa
           {/* Close Button - Mobile */}
           <button
             onClick={onMobileClose}
-            className="md:hidden p-1 rounded-md text-gray-400 hover:bg-gray-700 hover:text-white"
+            className="md:hidden p-1 rounded-md text-text-on-primary/70 hover:bg-primary-subtle hover:text-text-on-primary"
             aria-label="Cerrar menú"
           >
             <XIcon className="h-6 w-6" />
@@ -81,8 +81,8 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, onRoleChange, activeItemLa
                   }}
                   className={`flex items-center p-3 my-1 rounded-lg transition-colors ${
                     activeItemLabel === item.label
-                      ? 'bg-secondary text-white'
-                      : 'text-gray-200 hover:bg-secondary hover:text-white'
+                      ? 'bg-primary text-text-on-primary'
+                      : 'text-text-on-primary/90 hover:bg-primary hover:text-text-on-primary'
                   }`}
                 >
                   <span className="flex-shrink-0 h-6 w-6">{item.icon}</span>
@@ -93,11 +93,11 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, onRoleChange, activeItemLa
           </ul>
         </nav>
 
-        <div className="p-4 border-t border-gray-700">
+        <div className="p-4 border-t border-primary-subtle">
           <button
             onClick={onRoleChange}
             title={desktopCollapsed ? "Cambiar Rol" : undefined}
-            className={`flex items-center w-full p-3 my-1 rounded-lg hover:bg-secondary hover:text-white transition-colors ${desktopCollapsed ? 'justify-center' : ''}`}
+            className={`flex items-center w-full p-3 my-1 rounded-lg hover:bg-primary hover:text-text-on-primary transition-colors ${desktopCollapsed ? 'justify-center' : ''}`}
           >
             <SwitchHorizontalIcon className="h-6 w-6 flex-shrink-0" />
             {!desktopCollapsed && <span className="ml-4 font-medium">Cambiar Rol</span>}
